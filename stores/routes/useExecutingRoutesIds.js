@@ -1,0 +1,12 @@
+import { shallow } from 'zustand/shallow';
+import { useRouteExecutionStore } from './RouteExecutionStore';
+import { RouteExecutionStatus } from './types';
+export const useExecutingRoutesIds = (address) => {
+    return useRouteExecutionStore((state) => Object.values(state.routes)
+        .filter((item) => item.route.fromAddress === address &&
+        (item.status === RouteExecutionStatus.Pending ||
+            item.status === RouteExecutionStatus.Failed))
+        .sort((a, b) => (b?.route.steps[0].execution?.process[0].startedAt ?? 0) -
+        (a?.route.steps[0].execution?.process[0].startedAt ?? 0))
+        .map(({ route }) => route.id), shallow);
+};
